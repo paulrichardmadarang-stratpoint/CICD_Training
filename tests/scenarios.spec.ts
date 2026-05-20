@@ -117,7 +117,7 @@ test.describe("Products", () => {
 
   test("product detail page opens correctly", async ({ page }) => {
     const inventory = new InventoryPage(page);
-    await inventory.goToItem("Sauce Labs BackpackX");
+    await inventory.goToItem("Sauce Labs Backpack");
 
     // TODO: Assert .inventory_details_name is visible
     // TODO: Assert it contains 'Sauce Labs Backpack'

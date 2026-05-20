@@ -76,6 +76,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Run Palywright tests
+        run: npx playwright test
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()  # Upload even if tests fail
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
       # TODO (Module 3): Set up Node.js 20 using actions/setup-node@v4
 
