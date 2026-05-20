@@ -13,7 +13,7 @@ test.describe("Login", () => {
     const login = new LoginPage(page);
     await login.navigate();
     await login.login(USERNAME, PASSWORD);
-
+    await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html")
     // TODO: Assert page URL matches /inventory/
   });
 
