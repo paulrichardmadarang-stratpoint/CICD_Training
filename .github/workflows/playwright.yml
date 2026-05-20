@@ -10,82 +10,64 @@ on:
 jobs:
 
   # ── Security Scan — Trivy ──────────────────────────────────────────────────
-  # security-scan:
-  #   name: Security Scan (Trivy)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  security-scan:
+    name: Security Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Run Trivy filesystem scan
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         scan-type: fs
-  #         scan-ref: .
-  #         severity: CRITICAL,HIGH
-  #         exit-code: 1
-  #         format: table
+      # TODO (Module 5): Add Trivy filesystem scan step
+      # Use: aquasecurity/trivy-action@master
+      # Scan type: fs, scan ref: .
+      # Severity: CRITICAL,HIGH — set exit-code: 1 to block the pipeline
 
   # ── Code Quality — SonarCloud ──────────────────────────────────────────────
-  # code-quality:
-  #   name: Code Quality (SonarCloud)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0  # Required for SonarCloud blame data
+  code-quality:
+    name: Code Quality (SonarCloud)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: SonarCloud Scan
-  #       uses: SonarSource/sonarcloud-github-action@master
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # TODO (Module 5): Add SonarCloud scan step
+      # Use: SonarSource/sonarcloud-github-action@master
+      # Requires: SONAR_TOKEN secret set in your repo settings
 
   # ── Playwright Python ──────────────────────────────────────────────────────
-  # test-python:
-  #   name: Run Tests (Python)
-  #   runs-on: ubuntu-latest
-  #   needs: [security-scan, code-quality]  # Only run if quality gates pass
+  test-python:
+    name: Run Tests (Python)
+    runs-on: ubuntu-latest
+    needs: [security-scan, code-quality]  # Quality gates must pass first
 
-  #   defaults:
-  #     run:
-  #       working-directory: playwright-python
+    defaults:
+      run:
+        working-directory: playwright-python
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: "3.11"
+      # TODO (Module 3): Set up Python 3.11 using actions/setup-python@v5
 
-  #     - name: Install dependencies
-  #       run: |
-  #         pip install -r requirements.txt
-  #         playwright install --with-deps chromium
+      # TODO (Module 3): Install dependencies from requirements.txt
+      # and install Playwright browser: playwright install --with-deps chromium
 
-  #     - name: Run Playwright tests
-  #       run: pytest --html=report.html --self-contained-html -v
-  #       env:
-  #         BASE_URL: ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
-  #         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME || 'standard_user' }}
-  #         SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD || 'secret_sauce' }}
+      # TODO (Module 4): Run pytest with HTML report output
+      # Command: pytest --html=report.html --self-contained-html -v
+      # Set these env vars: BASE_URL, SAUCE_USERNAME, SAUCE_PASSWORD
 
-  #     - name: Upload test report
-  #       uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: python-test-report
-  #         path: playwright-python/report.html
-  #         retention-days: 7
+      # TODO (Module 6): Upload report.html as a GitHub Actions artifact
+      # Use: actions/upload-artifact@v4
+      # Make sure it runs even when tests fail (if: always())
 
   # ── Playwright TypeScript ──────────────────────────────────────────────────
   test-typescript:
     name: Run Tests (TypeScript)
     runs-on: ubuntu-latest
-    needs: [security-scan, code-quality]  # Only run if quality gates pass
+    needs: [security-scan, code-quality]  # Quality gates must pass first
 
     defaults:
       run:
@@ -95,30 +77,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: playwright-typescript/package-lock.json
+      # TODO (Module 3): Set up Node.js 20 using actions/setup-node@v4
 
-      - name: Install dependencies
-        run: npm ci
+      # TODO (Module 3): Run npm ci to install dependencies
+      # Then install browsers: npx playwright install --with-deps chromium
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      # TODO (Module 4): Run Playwright tests using npx playwright test
+      # Set these env vars: BASE_URL, SAUCE_USERNAME, SAUCE_PASSWORD
 
-      - name: Run Playwright tests
-        run: npx playwright test
-        env:
-          BASE_URL: ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME || 'standard_user' }}
-          SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD || 'secret_sauce' }}
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: typescript-test-report
-          path: playwright-typescript/playwright-report/
-          retention-days: 7
+      # TODO (Module 6): Upload playwright-report/ as a GitHub Actions artifact
