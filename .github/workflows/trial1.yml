@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: develop
     steps:
-      - run echo ${{ vars.SD_USERNAME }}
-      - run echo ${{ vars.SD_PASSWORD }}
+      - run: echo ${{ vars.SD_USERNAME }}
+      - run: echo ${{ vars.SD_PASSWORD }}
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
